@@ -2,14 +2,14 @@
 
 Gem::Specification.new do |s|
   s.name = %q{dash-merb}
-  s.version = "0.6.2"
+  s.version = "0.6.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["FiveRuns Development Team"]
   s.date = %q{2009-02-17}
   s.description = %q{Provides an API to send metrics from Merb 1.0+ applications to the FiveRuns Dash service}
   s.email = %q{dev@fiveruns.com}
-  s.files = ["README.rdoc", "VERSION.yml", "lib/dash-merb.rb", "lib/fiveruns", "lib/fiveruns/dash", "lib/fiveruns/dash/merb", "lib/fiveruns/dash/merb/recipe.rb", "lib/fiveruns/dash/merb.rb"]
+  s.files = ["README.rdoc", "VERSION.yml", "lib/fiveruns", "lib/fiveruns/dash", "lib/fiveruns/dash/merb", "lib/fiveruns/dash/merb/recipe.rb", "lib/fiveruns/dash/merb.rb", "lib/fiveruns-dash-merb.rb"]
   s.has_rdoc = true
   s.homepage = %q{http://github.com/fiveruns/dash-merb}
   s.rdoc_options = ["--inline-source", "--charset=UTF-8"]
