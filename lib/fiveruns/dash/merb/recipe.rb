@@ -1,7 +1,16 @@
 Fiveruns::Dash.register_recipe :merb, :url => 'http://dash.fiveruns.com' do |recipe|
   recipe.time :response_time, :method => 'Merb::Request#dispatch_action'
+  
   recipe.counter :requests, :incremented_by => 'Merb::Request#dispatch_action'
-  recipe.time :render_time, :method => 'Merb::RenderMixin#render'
+  
+  # Mark re-entrant so this doesn't get counted multiple times if nested
+  recipe.time :render_time, :method => 'Merb::RenderMixin#render',
+                            :reentrant => true
+  
+  # ==============
+  # = EXCEPTIONS =
+  # ==============
+  
   merb_exceptions = Merb::ControllerExceptions.constants.map do |name|
     "Merb::ControllerExceptions::#{name}"
   end
@@ -25,4 +34,5 @@ Fiveruns::Dash.register_recipe :merb, :url => 'http://dash.fiveruns.com' do |rec
     # TODO: capture headers
     info
   end
+  
 end
