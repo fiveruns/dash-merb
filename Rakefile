@@ -10,6 +10,7 @@ begin
     s.description = "Provides an API to send metrics from Merb 1.0+ applications to the FiveRuns Dash service"
     s.authors = ["FiveRuns Development Team"]
     s.add_dependency('fiveruns-dash-ruby', '>= 0.8.0')
+    s.add_dependency('merb-core', '>= 1.0.0')
   end
 rescue LoadError
   puts "Jeweler not available. Install it with: sudo gem install technicalpickles-jeweler -s http://gems.github.com"
