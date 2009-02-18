@@ -1,9 +1,23 @@
 Fiveruns::Dash.register_recipe :merb, :url => 'http://dash.fiveruns.com' do |recipe|
-  recipe.time :response_time, :method => 'Merb::Request#dispatch_action'
   
-  recipe.counter :requests, :incremented_by => 'Merb::Request#dispatch_action'
+  recipe.time :response_time, :method => 'Merb::Request#dispatch_action',
+                              :context => lambda { |request, *args|
+                                [
+                                  [],
+                                  [:action, "#{request.controller}##{request.params[:action]}"]
+                                ]
+                              }
+  
+  recipe.counter :requests, :incremented_by => 'Merb::Request#dispatch_action',
+                            :context => lambda { |request, *args|
+                              [
+                                [],
+                                [:action, "#{request.controller}##{request.params[:action]}"]
+                              ]
+                            }
   
   # Mark re-entrant so this doesn't get counted multiple times if nested
+  # TODO: Track context (needed for barlist 'detail')
   recipe.time :render_time, :method => 'Merb::RenderMixin#render',
                             :reentrant => true
   
