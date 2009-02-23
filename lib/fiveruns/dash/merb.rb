@@ -28,6 +28,33 @@ module Fiveruns::Dash
     rescue LoadError
       Fiveruns::Dash.logger.warn "Could not auto-add recipe for ORM from fiveruns-dash-#{::Merb.orm}"
     end
+    
+    def self.view_name(obj, args)
+      thing, opts = _parse_render_args(obj, args)
+      if opts[:template]
+        File.basename(opts[:template].to_s)
+      elsif thing.is_a?(Symbol)
+        thing.to_s
+      elsif thing.is_a?(String)
+        '(string)'
+      end
+    rescue => e
+      Fiveruns::Dash.logger.debug "FiveRuns Dash could not determine view name  (#{e.message})"
+    end
+    
+    def self._parse_render_args(obj, args)
+      thing = args[0]
+      opts = args[1] || {}
+      # render :format => :xml means render nil, :format => :xml
+      opts, thing = thing, nil if thing.is_a?(Hash)
+
+      # Merge with class level default render options
+      opts = obj.class.default_render_options.merge(opts)
+
+      # If you don't specify a thing to render, assume they want to render the current action
+      thing ||= obj.action_name.to_sym
+      [thing, opts]
+    end
       
   end
 end

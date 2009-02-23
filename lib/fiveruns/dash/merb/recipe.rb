@@ -2,24 +2,40 @@ Fiveruns::Dash.register_recipe :merb, :url => 'http://dash.fiveruns.com' do |rec
   
   recipe.time :response_time, :method => 'Merb::Request#dispatch_action',
                               :context => lambda { |request, *args|
-                                [
-                                  [],
-                                  [:action, "#{request.controller}##{request.params[:action]}"]
+                                Fiveruns::Dash::Context.set [
+                                  :action,
+                                  "#{request.controller}##{request.params[:action]}"
                                 ]
+                                Fiveruns::Dash.logger.info "Setting response_time action context to #{Fiveruns::Dash::Context.context.inspect}"
+                                
+                                [[], Fiveruns::Dash::Context.context]
                               }
   
   recipe.counter :requests, :incremented_by => 'Merb::Request#dispatch_action',
                             :context => lambda { |request, *args|
-                              [
-                                [],
-                                [:action, "#{request.controller}##{request.params[:action]}"]
+                              Fiveruns::Dash::Context.set [
+                                :action,
+                                "#{request.controller}##{request.params[:action]}"
                               ]
+                              Fiveruns::Dash.logger.info "Setting requests action context to #{Fiveruns::Dash::Context.context.inspect}"
+                              
+                              [[], Fiveruns::Dash::Context.context]
                             }
   
-  # Mark re-entrant so this doesn't get counted multiple times if nested
-  # TODO: Track context (needed for barlist 'detail')
   recipe.time :render_time, :method => 'Merb::RenderMixin#render',
-                            :reentrant => true
+                            :reentrant => true,
+                            :context => lambda { |obj, *args|
+                              name = Fiveruns::Dash::Merb.view_name(obj, args)
+                              if name
+                                context = Fiveruns::Dash::Context.context.dup
+                                context.push(:view, name)
+                                Fiveruns::Dash.logger.info "Setting view context to #{context.inspect}"
+                                [[], context]
+                              else
+                                Fiveruns::Dash.logger.info "Setting view context to empty #{[obj, args].inspect}"
+                                []
+                              end
+                            }
   
   # ==============
   # = EXCEPTIONS =
