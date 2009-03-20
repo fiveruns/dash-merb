@@ -2,6 +2,7 @@ Fiveruns::Dash.register_recipe :merb, :url => 'http://dash.fiveruns.com' do |rec
   
   recipe.time :response_time, :method => 'Merb::Request#dispatch_action',
                               :context => lambda { |request, *args|
+                                Fiveruns::Dash.session.reporter.revive!
                                 [
                                   [],
                                   [:action, "#{request.controller}##{request.params[:action]}"]
